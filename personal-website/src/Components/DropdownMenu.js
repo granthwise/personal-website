@@ -4,46 +4,45 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Typography, IconButton } from '@mui/material';
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import {usePopupState,bindHover} from 'material-ui-popup-state/hooks'
+import HoverMenu from 'material-ui-popup-state/HoverMenu'
 
 const DropdownMenu = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+    const popupState = usePopupState({
+      variant: 'popover',
+      popupId: 'demoMenu',
+    })
+  
 
   return (
     <div>
-      <IconButton
-        id="basic-button"
-        edge="start"
-        color="inherit"
-        aria-label="menu"
-        aria-controls={open ? 'basic-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
-      >
-          <MenuIcon />
-      </IconButton>
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
-      >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
-      </Menu>
+      <PopupState variant="popover" popupId="demo-popup-menu">
+      {(popupState) => (
+        <React.Fragment>
+            <IconButton
+            id="basic-button"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            variant="contained" {...bindHover(popupState)}
+            >
+                <MenuIcon />
+            </IconButton>
+            <HoverMenu
+                {...bindMenu(popupState)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+            >
+                <MenuItem onClick={popupState.close}>Cake</MenuItem>
+                <MenuItem onClick={popupState.close}>Death</MenuItem>
+            </HoverMenu>
+        </React.Fragment>
+      )}
+    </PopupState>
     </div>
   );
+
 }
 
 export default DropdownMenu
